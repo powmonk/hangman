@@ -34,6 +34,7 @@ public class Game {
 	}
 	
 	public static String cleanWord(String word){
+		// This method returns a String stripped of all non-aphas
 		String cleanedWord = "";
 		
 		for(int i=0;i<word.length();i++){
@@ -45,6 +46,8 @@ public class Game {
 	}
 	
 	public static ArrayList<String> readFile(String fileName){
+		// This method reads all words from a file and creates an arraylist from them.
+		// It also calculates and appends the lettercount of the largest word to the list
 		BufferedReader reader = null;
 		ArrayList<String> wordList = new ArrayList<String>();
 		int letterCount = 0;
@@ -59,16 +62,22 @@ public class Game {
 		boolean done = false;
 		String inputLine = null;
 		
+		// This loop reads from the source file and builds the arrayList until 
+		// the whole file has been processed
 		while(!done){
+			// Read one line at a time
 			try{
 				inputLine = reader.readLine();
 			}catch(IOException ioe){
 				System.out.println("I/O error");
 				System.exit(3);
 			}
-			if(inputLine == null){
-				done = true;
-			}else{
+			
+			// If the line read above is not null then this branch+loop
+			// breaks the line down into words and the cleanWord method removes
+			// non-alphanumeric characters before adding it to the arraylist
+			if(inputLine != null){
+
 				String[] tempArray = inputLine.split(" +");
 				String loopWord;
 				
@@ -76,11 +85,17 @@ public class Game {
 					loopWord = cleanWord(tempArray[i]);
 					
 					wordList.add(loopWord);
-
+					
+					// This branch simply check each word against the
+					// previous to see if it's bigger and assigns the
+					// biggest letter count to letterCount
 					if(loopWord.length()>letterCount){
 						letterCount = loopWord.length();
 					}
 				}
+
+			}else{
+				done = true;
 			}
 		}
 		try{
@@ -90,6 +105,7 @@ public class Game {
 			System.exit(4);
 		}
 		
+		// Append the highest letter count to the last arrayList position
 		wordList.add(Integer.toString(letterCount));
 		
 		return wordList;
@@ -123,8 +139,11 @@ public class Game {
 	}
 	
 	public static char[] wordToGuess(String[] args){
+		// This method returns a random word that is not smaller than the number of guesses
+		// the user has chosen. This is to avoid games that are impossible to win.
 		ArrayList<String> wordList = readFile(args[0]);
 		
+		// The last position in the arraylist is the size of the biggest word
 		int maxLength = Integer.parseInt(wordList.get(wordList.size()-1));
 		char[] wordToGuess;
 		int guessCount = Integer.valueOf(args[1]);
@@ -132,12 +151,12 @@ public class Game {
 		if(guessCount<maxLength){
 			System.out.print("Thinking of a word");
 			do{
-				wordToGuess = wordList.get(returnRand(readFile(args[0]).size()-1)).toCharArray();
+				wordToGuess = wordList.get(returnRand(wordList.size()-1)).toCharArray();
 				System.out.print(".");
 				
 			}while(wordToGuess.length>guessCount);
 		}else{
-			wordToGuess = wordList.get(returnRand(readFile(args[0]).size()-1)).toCharArray();
+			wordToGuess = wordList.get(returnRand(wordList.size()-1)).toCharArray();
 		}
 
 		
@@ -149,13 +168,12 @@ public class Game {
 	}
 	
 	public static void main(String[] args) {
+		// Call the method that deals with the args array exceptions
 		dealWithArgs(args);
-		char[] wordToGuess; 
-		int wordLength;
 		
-		wordToGuess = wordToGuess(args);
-		wordLength = wordToGuess.length;
-
+		// Declare and initialise the randomly selected word and it's length
+		char[] wordToGuess = wordToGuess(args); 
+		int wordLength = wordToGuess.length;;
 		
 		char[] displayChars = new char[wordLength];
 		char guess = ' ';
@@ -170,13 +188,14 @@ public class Game {
 		for(int i=0;i<wordLength;i++){displayChars[i]='*';}
 		
 		do{
+			// This branch defines the win condition
 			if(success==wordLength){
 				winMet = true;
 				gameOver = true;
 			}
-
-			output.printf(multiString("\n", 50));		
-			output.printf("\n");
+			
+			// Below is the formatted output 
+			output.printf(multiString("\n", 50));	
 			output.printf("%s\n\n", "HANGMAN! ");
 
 			for(int j=0;j<wordLength;j++){
@@ -209,7 +228,8 @@ public class Game {
 			}else{
 				guess=' ';
 			}
-
+			
+			// '!' is used as a special escape character to tell if the guess is a valid one
 			if(guess!='!'){
 				count++;
 				
