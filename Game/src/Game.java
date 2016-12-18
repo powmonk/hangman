@@ -20,8 +20,8 @@ public class Game {
 			System.exit(1);
 		}
 		
-		if(Integer.parseInt(args[1]) > 26){
-			System.out.println("More than 26 guesses?! Too easy!");
+		if(Integer.parseInt(args[1]) > 25 || Integer.parseInt(args[1]) < 3){
+			System.out.println("Guesses must be between 3 and 25");
 			System.exit(6);
 		}
 		
@@ -70,11 +70,15 @@ public class Game {
 				done = true;
 			}else{
 				String[] tempArray = inputLine.split(" +");
+				String loopWord;
 				
 				for(int i=0; i<tempArray.length;i++){
-					wordList.add(cleanWord(tempArray[i]));
-					if(wordList.get(i).length()>letterCount){
-						letterCount = wordList.get(i).length();
+					loopWord = cleanWord(tempArray[i]);
+					
+					wordList.add(loopWord);
+
+					if(loopWord.length()>letterCount){
+						letterCount = loopWord.length();
 					}
 				}
 			}
@@ -120,14 +124,18 @@ public class Game {
 	
 	public static char[] wordToGuess(String[] args){
 		ArrayList<String> wordList = readFile(args[0]);
-		int maxLength = Integer.parseInt(wordList.get(wordList.size()));
+		
+		int maxLength = Integer.parseInt(wordList.get(wordList.size()-1));
 		char[] wordToGuess;
-		int guessCount = Integer.parseInt(args[1]);
+		int guessCount = Integer.valueOf(args[1]);
 		
 		if(guessCount<maxLength){
+			System.out.print("Thinking of a word");
 			do{
 				wordToGuess = wordList.get(returnRand(readFile(args[0]).size()-1)).toCharArray();
-			}while(wordToGuess.length<guessCount);
+				System.out.print(".");
+				
+			}while(wordToGuess.length>guessCount);
 		}else{
 			wordToGuess = wordList.get(returnRand(readFile(args[0]).size()-1)).toCharArray();
 		}
