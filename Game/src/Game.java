@@ -15,6 +15,7 @@ public class Game {
 	}
 	
 	public static void dealWithArgs(String[] args){
+		// This checks that the program is being passed the valid number of inputs
 		if(args.length!=2){
 			System.out.println("Usage: java Game (words file) (number of guesses)");
 			System.exit(1);
@@ -35,9 +36,6 @@ public class Game {
 			System.out.println("Guesses must be between 3 and 25");
 			System.exit(3);
 		}
-
-
-		
 
 	}
 	
@@ -122,19 +120,34 @@ public class Game {
 	public static char readLine(){
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		String input;
+		String cleanedInput = "";
 		
 		try{
+			// Assigns the string entered at the console to the variable "input"
 			input = reader.readLine();
-			System.out.println(input.length());
-			if(input.length()==1){
-				if(Character.isAlphabetic(input.charAt(0))){
-					return Character.toUpperCase(input.charAt(0));
+
+			// This branch/loop strips any spaces from the input string
+			if(input.length()>0){
+				for(int i=0;i<input.length();i++){
+					if(input.charAt(i)!=' '){
+						cleanedInput += input.charAt(i);
+						System.out.print(cleanedInput);
+					}
+				}
+			}
+			
+			// If there is only one letter entered then it is returned as a char to be used as a valid guess
+			if(cleanedInput.length()==1){
+				if(Character.isAlphabetic(cleanedInput.charAt(0))){
+					return Character.toUpperCase(cleanedInput.charAt(0));
 				}
 			}
 		}catch(IOException ioe){
 			System.out.println(ioe);
 			System.exit(7);
 		}
+		
+		// If the above code fails then an exclamation point is returned for error handling
 		return '!';
 	}
 	
@@ -188,6 +201,9 @@ public class Game {
 		int guessCount;
 		boolean gameOver, winMet, letterBad; 
 		gameOver = winMet = letterBad = false;
+		
+		String spacer = multiString(String.valueOf((char)205), 28);
+		String winLose;
 
 		int count = 0;
 		int success = 0;
@@ -197,37 +213,70 @@ public class Game {
 		
 		do{
 			// This branch defines the win condition
-			if(success==wordLength){
+			if(success>=wordLength){
 				winMet = true;
 				gameOver = true;
 			}
 			
 			// Below is the formatted output 
-			output.printf(multiString("\n", 50));	
-			output.printf("%s\n\n", "HANGMAN! ");
+			output.printf(multiString("\n", 50));
 
+			// Top of Box
+			output.printf(String.valueOf((char)201) + spacer + String.valueOf((char)187 )+"\n");
+			
+			output.printf("%s%28s%s\n", (String.valueOf((char)186)),"",(String.valueOf((char)186)));
+			
+			
+			output.printf("%s%18s%11s\n", String.valueOf((char)186), "HANGMAN!", String.valueOf((char)186));
+			output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
+			output.printf("%s%s%s\n",String.valueOf((char)204),spacer,String.valueOf((char)185));
+
+			output.printf("%s%s", String.valueOf((char)186), multiString(" ", (28-wordLength)/2));
+			
 			for(int j=0;j<wordLength;j++){
 				output.printf("%s", displayChars[j]);
 			}
-			output.printf("\n\n");
+
+			if(wordLength%2!=0){
+				output.printf(" ");
+			}
+
+			output.printf("%s%s\n", multiString(" ", (28-wordLength)/2), String.valueOf((char)186));
+			
+//			output.printf(spacer + "\n");
+			
+			output.printf("%s%s%s\n", String.valueOf((char)204), spacer, String.valueOf((char)185));
 			guessCount = Integer.parseInt(args[1])-count;
 			if(guessCount>1){
-				output.printf("%sYou have %d guesses left\n", "", guessCount);
+				output.printf("%s%2s", String.valueOf((char)186), " ");
+					
+				output.printf("You have %2d guesses left", guessCount);
+				output.printf("%2s%s\n", " ", String.valueOf((char)186));
+
 				
 			}else{
-				output.printf("You have 1 guess left\n");
+				output.printf("%s%2s", String.valueOf((char)186), "  ");
+				output.printf("You have %2d guess left", guessCount);
+				output.printf("%4s%s\n", " ", String.valueOf((char)186));
+
 			}
 
 			if(letterBad){
 				if(guess=='!'){
-					output.printf("%s(Guesses must be 1 (and only 1!) letter from the alphabet!)\n", "");
+					output.printf("%s%7s", String.valueOf((char)186), " ");
+					output.printf(" Invalid Guess!");
+					output.printf("%6s%s\n", " ", String.valueOf((char)186));
 				}
 			}else{
-				output.printf("\n");
+				output.printf("%s%s%s\n",String.valueOf((char)204),spacer,String.valueOf((char)185));
 			}
 			
-			output.printf("%sGuess a letter","");
-			output.printf(multiString("\n", 2));		
+			output.printf("%s%7s", String.valueOf((char)186), " ");
+			output.printf("Guess a letter");
+			output.printf("%7s%s\n", " ", String.valueOf((char)186));
+			
+			// Box Bottom
+			output.printf("%s%s%s\n\n\n",String.valueOf((char)200),spacer,String.valueOf((char)188));
 			output.printf(":");
 
 
@@ -242,9 +291,10 @@ public class Game {
 				count++;
 				
 				for(int j=0;j<wordLength;j++){
-					if(guess==wordToGuess[j]){
+					if(guess==wordToGuess[j] && displayChars[j] == '*' ){
 						displayChars[j] = wordToGuess[j];
 						success++;
+						count--;
 					}
 				}
 				letterBad = false;
@@ -259,21 +309,35 @@ public class Game {
 			
 		}while(!gameOver);
 		
-		if(winMet){
-			output.printf(multiString("\n", 50));
-			output.printf("The word was: ");
-			for(int j=0;j<wordLength;j++){
-				output.printf("%s", wordToGuess[j]);
-			}
-			output.printf("\n\nWell Done");
+		
+		winLose = winMet?"Well Done":"Hard Luck";
 
-		}else{
-			output.printf(multiString("\n", 50));
-			output.printf("The word was: ");
-			for(int j=0;j<wordLength;j++){
-				output.printf("%s", wordToGuess[j]);
-			}
-			output.printf("\n\nHard Luck\n");
+		output.printf(multiString("\n", 50));
+		// Top of Box
+		output.printf(String.valueOf((char)201) + spacer + String.valueOf((char)187 )+"\n");
+		output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
+		output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
+
+		output.printf("%s%7sThe word was:%8s%s\n", String.valueOf((char)186), " ", " ", String.valueOf((char)186) );
+
+		output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
+		output.printf("%s%s", String.valueOf((char)186), multiString(" ", (28-wordLength)/2));
+		for(int j=0;j<wordLength;j++){
+			output.printf("%s", wordToGuess[j]);
 		}
+		if(wordLength%2!=0){
+			output.printf(" ");
+		}
+		
+		
+		output.printf("%s%s\n", multiString(" ", (28-wordLength)/2), String.valueOf((char)186));
+
+		output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
+		
+		output.printf("%s%10s%s%10s\n", String.valueOf((char)186), " ", winLose, String.valueOf((char)186));
+		output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
+		// Box Bottom
+		output.printf("%s%s%s\n\n",String.valueOf((char)200),spacer,String.valueOf((char)188));
+	
 	}
 }
