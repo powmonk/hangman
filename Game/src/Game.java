@@ -20,17 +20,25 @@ public class Game {
 			System.exit(1);
 		}
 		
-		if(Integer.parseInt(args[1]) > 25 || Integer.parseInt(args[1]) < 3){
-			System.out.println("Guesses must be between 3 and 25");
-			System.exit(2);
-		}
-		
+		// Checks if the number of guesses is a valid integer
 		for(int i=0;i<args[1].length();i++){
-			if(!Character.isDigit(args[1].charAt(i))){
-				System.out.println("Please enter number of guesses as an integer");
-				System.exit(3);
+			char loopChar = args[1].charAt(i);
+
+			if(!Character.isDigit(loopChar)){
+				System.out.println("Guesses must be a valid integer");
+				System.exit(2);
 			}
 		}
+		
+		// Check that the above integer is within a valid range specified below
+		if(Integer.parseInt(args[1]) > 25 || Integer.parseInt(args[1]) < 3){
+			System.out.println("Guesses must be between 3 and 25");
+			System.exit(3);
+		}
+
+
+		
+
 	}
 	
 	public static String cleanWord(String word){
