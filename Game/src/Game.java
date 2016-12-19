@@ -22,13 +22,13 @@ public class Game {
 		
 		if(Integer.parseInt(args[1]) > 25 || Integer.parseInt(args[1]) < 3){
 			System.out.println("Guesses must be between 3 and 25");
-			System.exit(6);
+			System.exit(2);
 		}
 		
 		for(int i=0;i<args[1].length();i++){
 			if(!Character.isDigit(args[1].charAt(i))){
 				System.out.println("Please enter number of guesses as an integer");
-				System.exit(2);
+				System.exit(3);
 			}
 		}
 	}
@@ -56,7 +56,7 @@ public class Game {
 			reader = new BufferedReader(new FileReader(fileName));
 		}catch(FileNotFoundException fnfe){
 			System.out.println("Error on opening file data");
-			System.exit(3);
+			System.exit(4);
 		}
 		
 		boolean done = false;
@@ -70,7 +70,7 @@ public class Game {
 				inputLine = reader.readLine();
 			}catch(IOException ioe){
 				System.out.println("I/O error");
-				System.exit(3);
+				System.exit(5);
 			}
 			
 			// If the line read above is not null then this branch+loop
@@ -102,7 +102,7 @@ public class Game {
 			reader.close();
 		}catch(IOException ioe){
 			System.out.println("Error closing file '"+fileName+"'");
-			System.exit(4);
+			System.exit(6);
 		}
 		
 		// Append the highest letter count to the last arrayList position
@@ -125,7 +125,7 @@ public class Game {
 			}
 		}catch(IOException ioe){
 			System.out.println(ioe);
-			System.exit(4);
+			System.exit(7);
 		}
 		return '!';
 	}
