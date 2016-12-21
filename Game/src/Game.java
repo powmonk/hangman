@@ -286,17 +286,20 @@ public class Game {
 				guess=' ';
 			}
 			
-			// '!' is used as a special escape character to tell if the guess is a valid one
+			// '!' is used as a special escape character to tell if the guess is a valid one, returned from readLine()
+			
 			if(guess!='!'){
 				count++;
+				boolean guessRight = false;
 				
 				for(int j=0;j<wordLength;j++){
 					if(guess==wordToGuess[j] && displayChars[j] == '*' ){
 						displayChars[j] = wordToGuess[j];
 						success++;
-						count--;
+						guessRight = true;
 					}
 				}
+				count = guessRight?count-=1:count;
 				letterBad = false;
 			}else{
 				letterBad = true;
@@ -310,18 +313,25 @@ public class Game {
 		}while(!gameOver);
 		
 		
+		// If winMet then well done else hard luck
 		winLose = winMet?"Well Done":"Hard Luck";
 
-		output.printf(multiString("\n", 50));
-		// Top of Box
-		output.printf(String.valueOf((char)201) + spacer + String.valueOf((char)187 )+"\n");
-		output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
-		output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
+					// Clear console
+					output.printf(multiString("\n", 50));
+					
+					// Top of Box - Start
+					output.printf(String.valueOf((char)201) + spacer + String.valueOf((char)187 )+"\n");
+					// Top of Box - End
 
-		output.printf("%s%7sThe word was:%8s%s\n", String.valueOf((char)186), " ", " ", String.valueOf((char)186) );
+					output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
+					output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
+			
+					output.printf("%s%7sThe word was:%8s%s\n", String.valueOf((char)186), " ", " ", String.valueOf((char)186) );
+			
+					output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
+					output.printf("%s%s", String.valueOf((char)186), multiString(" ", (28-wordLength)/2));
 
-		output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
-		output.printf("%s%s", String.valueOf((char)186), multiString(" ", (28-wordLength)/2));
+		// This outputs the 
 		for(int j=0;j<wordLength;j++){
 			output.printf("%s", wordToGuess[j]);
 		}
@@ -330,14 +340,16 @@ public class Game {
 		}
 		
 		
-		output.printf("%s%s\n", multiString(" ", (28-wordLength)/2), String.valueOf((char)186));
+					output.printf("%s%s\n", multiString(" ", (28-wordLength)/2), String.valueOf((char)186));
+			
+					output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
+					
+					output.printf("%s%10s%s%10s\n", String.valueOf((char)186), " ", winLose, String.valueOf((char)186));
+					output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
+					// Bottom of Box - Start
+					output.printf("%s%s%s\n\n",String.valueOf((char)200),spacer,String.valueOf((char)188));
+					// Bottom of Box - End
 
-		output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
-		
-		output.printf("%s%10s%s%10s\n", String.valueOf((char)186), " ", winLose, String.valueOf((char)186));
-		output.printf("%s%28s%s\n", String.valueOf((char)186), "", String.valueOf((char)186));
-		// Box Bottom
-		output.printf("%s%s%s\n\n",String.valueOf((char)200),spacer,String.valueOf((char)188));
 	
 	}
 }
