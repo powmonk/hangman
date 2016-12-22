@@ -263,17 +263,22 @@ public class Game {
 
 			if(letterBad){
 				if(guess=='!'){
+					//output.printf("%s%7s", String.valueOf((char)186), " ");
+					//output.printf("Invalid Guess!");
+					//output.printf("%6s%s\n", " ", String.valueOf((char)186));
+					output.printf("%s%s%s\n",String.valueOf((char)204),spacer,String.valueOf((char)185));
 					output.printf("%s%7s", String.valueOf((char)186), " ");
-					output.printf(" Invalid Guess!");
-					output.printf("%6s%s\n", " ", String.valueOf((char)186));
+					output.printf("Invalid Guess!");
+					output.printf("%7s%s\n", " ", String.valueOf((char)186));
 				}
 			}else{
 				output.printf("%s%s%s\n",String.valueOf((char)204),spacer,String.valueOf((char)185));
+				output.printf("%s%7s", String.valueOf((char)186), " ");
+				output.printf("Guess a letter");
+				output.printf("%7s%s\n", " ", String.valueOf((char)186));
 			}
 			
-			output.printf("%s%7s", String.valueOf((char)186), " ");
-			output.printf("Guess a letter");
-			output.printf("%7s%s\n", " ", String.valueOf((char)186));
+			
 			
 			// Box Bottom
 			output.printf("%s%s%s\n\n\n",String.valueOf((char)200),spacer,String.valueOf((char)188));
